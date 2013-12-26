@@ -46,6 +46,7 @@ Class Posts extends CI_Controller{
 	}
 
 	function post($post_id){
+		$data['errors'] = "";
 		$data['post']=$this->post->get_post($post_id);
 		$data['comment']=$this->comment->get_comment($post_id);
 		$this->load->helper('form');

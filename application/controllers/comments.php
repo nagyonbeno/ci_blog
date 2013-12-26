@@ -10,7 +10,7 @@ Class Comments extends CI_Controller{
 
 	function new_comment(){
 
-				$data['errors'] = "";
+				
 			if($_POST){
 				$config = array(
 				'field'  => 'comment',
@@ -48,11 +48,9 @@ Class Comments extends CI_Controller{
 		
 
 	function delete_comment($comment_id){
-			$this->load->model('post');
-			$data['post']=$this->post->get_post($post_id);
-			$data['comment']=$this->comment->get_comment($post_id);
+
 			$this->comment->delete_comment($comment_id);
-			redirect(base_url().'posts/post/'.$post['post_id']);
+			redirect( $_SERVER["HTTP_REFERER"] );
 
 		}
 
