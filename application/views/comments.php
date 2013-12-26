@@ -4,9 +4,10 @@
 <h4><?=$row['comment_szoveg']?></h4>
 <p>Hozzáadta: <?=$row['nev']?></p>
 <p><?=$row['comment_datum']?></p>
+<?= anchor(base_url().'/comments/delete_comment/'.$row['comment_id'], 'Delete Comment', 'title="Delete Comment"'); ?>
 <?php }
 }; ?>
-<?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?>
+<p><?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?></p>
 
 
 

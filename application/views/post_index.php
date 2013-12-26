@@ -3,22 +3,22 @@
       <p>You are <?=$this->session->userdata('user_type')?>.</p>
       <?= anchor('/users/logout', 'Log out', 'title="Log out"')."<br />"; ?>
       <?php if($this->session->userdata('user_type')=="author" || $this->session->userdata('user_type')=="admin") { ?>
-      <?= anchor('/posts/new_post', 'Add Post', 'title="Add post"'); ?>
+      <?= anchor('/posts/new_post', 'Add Post', 'title="Add post"')."<br />"; ?>
       <? } ?>
       <? } else { ?>
       <?= anchor('/users/login', 'Login', 'title="Login"')."<br />"; ?>
       <?= anchor('/users/register', 'Sign up', 'title="Sign up"'); ?>
       <? } ?>
       <?= form_open(base_url().'posts/index'); ?> 
-						<p> 
-						<?php 
-						$data_form = array(
-						  'name'  => 'search',
-						  'id'    => 'search',
-						  'size'  => '40',
-						  );
-						echo form_input($data_form);?>
-						<?= form_submit('','Search!'); ?></p>
+	    <p> 
+	    <?php 
+	    $data_form = array(
+	      'name'  => 'search',
+	      'id'    => 'search',
+	      'size'  => '40',
+	      );
+	    echo form_input($data_form);?>
+	    <?= form_submit('','Search!'); ?></p>
 		<?= form_close(); ?>
   		<?php if(!isset($posts)){ ?>
 	  		<p>No posts to load foo!</p>

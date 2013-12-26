@@ -10,6 +10,12 @@ $data_form = array(
   );
 echo form_textarea($data_form);
 ?></p>
+<input type="hidden" name="post_id" value="<?= $post['post_id'] ?>" />
 <?= form_submit('','Post!'); ?></p>
 <?= form_close(); ?>
+<? } ?>
+<?php if($errors) { ?>       
+<div>
+<?=$errors?>
+</div>
 <? } ?>

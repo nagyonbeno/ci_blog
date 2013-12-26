@@ -1,5 +1,4 @@
 <h2><?=$post['cim']?></h2>
-<p><?=$post['post_id']?></p>
 <p><?=$post['post_szoveg']?></p>
 <p>Hozzáadta: <?=$post['nev']?></p>
 <?php if($post['hashtag']) { ?>

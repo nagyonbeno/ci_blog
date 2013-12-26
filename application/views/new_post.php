@@ -21,9 +21,10 @@ echo form_textarea($data_form);
 ?></p>
 <p><?=form_label('Tags', 'hashtag');?> : <?php
 $data_form = array(
-  'id' => 'hashtag',
-  'name' => 'hashtag',
-  'size' =>  '40'
+  'id'    => 'hashtag',
+  'name'  => 'hashtag',
+  'size'  =>  '40',
+  'value' => set_value('hashtag')
   );  
 echo form_input($data_form);
 ?></p>
