@@ -11,7 +11,7 @@
       <? } ?>
       <?= form_open(base_url().'posts/index'); ?> 
 	    <p> 
-	    <?php 
+	    <?= form_label('Search', 'search'); ?> : <?php
 	    $data_form = array(
 	      'name'  => 'search',
 	      'id'    => 'search',
@@ -20,11 +20,19 @@
 	    echo form_input($data_form);?>
 	    <?= form_submit('','Search!'); ?></p>
 		<?= form_close(); ?>
+		<?php if(isset($errors)) { ?>
+			<?=$errors?>
+	  	<? } ?>
+	  	<?php if(isset($search,$count)) { ?>
+	  	<p><?="There are ".$count." results for : ".$search." ." ?></p>
+	  	<p><?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?></p>
+	  	<? } ?>
   		<?php if(!isset($posts)){ ?>
-	  		<p>No posts to load foo!</p>
-	  	<?php } else { 
+	  		<p>No posts to load!</p>
+	  		<p><?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?></p>
+	  	<?php } else {  
 	  		foreach ($posts as $row){ ?>
-	  			<article>		  	
+	  			<article>	  	
 					<h3>
 						<a href="<?=base_url()?>posts/post/<?=$row['post_id']?>"><?=$row['cim']?></a><br />
 						<?php if($this->session->userdata('user_type')=="author" || $this->session->userdata('user_type')=="admin") { ?>
@@ -38,4 +46,6 @@
 				</article>
 			<?php }
 		}; ?>
+	<?php if(isset($pages)) { ?>
     <?=$pages?>
+    <? } ?>

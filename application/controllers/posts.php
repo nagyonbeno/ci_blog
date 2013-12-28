@@ -9,10 +9,27 @@ Class Posts extends CI_Controller{
 	}
 
 	function index($start=0){
+		$data['errors'] = "";
 		if($_POST){
 
+			$config = array(
+
+			array(
+				'field'  => 'search',
+				'label'	 => 'Search',
+				'rules'  => 'required|min_length[3]'
+				)
+			);
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules($config);
+			if($this->form_validation->run() == FALSE){
+				$data['errors'] = validation_errors();
+			} else {
+
 			$search = $this->input->post('search',true);
+			$data['search']=$this->input->post('search',true);
 			$data['posts']=$this->post->search($search,5,$start);
+			$data['count']=$this->post->get_posts_count_search($search);
 
 			$this->load->library('pagination');
 		
@@ -23,7 +40,7 @@ Class Posts extends CI_Controller{
 			$this->pagination->initialize($config);
 			
 			$data['pages']=$this->pagination->create_links();
-
+			}
 		} else {
 
 			$data['posts']=$this->post->get_posts(5,$start);
@@ -45,10 +62,21 @@ Class Posts extends CI_Controller{
 		$this->load->view('footer');
 	}
 
-	function post($post_id){
-		$data['errors'] = "";
+	function post($post_id,$start=0){
+		$data['errors']=$this->session->flashdata('data');
 		$data['post']=$this->post->get_post($post_id);
-		$data['comment']=$this->comment->get_comment($post_id);
+		$data['comment']=$this->comment->get_comment($post_id,5,$start);
+
+		$this->load->library('pagination');
+		
+		$config['base_url'] = base_url().'posts/post/'.$post_id;
+		$config['total_rows'] = $this->comment->get_comments_count($post_id);
+		$config['per_page'] = 2;
+		
+		$this->pagination->initialize($config);
+		
+		$data['pages']=$this->pagination->create_links();
+
 		$this->load->helper('form');
 		$this->load->view('header');
 		$this->load->view('post',$data);

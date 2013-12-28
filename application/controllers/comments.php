@@ -13,17 +13,19 @@ Class Comments extends CI_Controller{
 				
 			if($_POST){
 				$config = array(
+					array(
 				'field'  => 'comment',
 				'label'	 => 'Leave a comment',
 				'rules'  => 'required|min_length[3]'
-					
+					)
 			
 				);
 
 				$this->load->library('form_validation');
 				$this->form_validation->set_rules($config);
 				if($this->form_validation->run() == FALSE){
-					$data['errors'] = validation_errors();
+					$this->session->set_flashdata('data', validation_errors());
+					redirect(base_url().'posts/post/'.$_POST['post_id']);
 				} else {
 				$data=array(
 					'comment_szoveg'  => htmlspecialchars($_POST['comment']),
@@ -38,8 +40,6 @@ Class Comments extends CI_Controller{
 
 					}
 
-				$this->load->helper('form');
-				$this->load->view('new_comment',$data);
 				
 	
 		}
@@ -48,7 +48,9 @@ Class Comments extends CI_Controller{
 		
 
 	function delete_comment($comment_id){
-
+			if(!$this->correct_permissions('admin')){
+			redirect(base_url().'users/login');
+			}
 			$this->comment->delete_comment($comment_id);
 			redirect( $_SERVER["HTTP_REFERER"] );
 
