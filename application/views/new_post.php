@@ -28,6 +28,15 @@ $data_form = array(
   );  
 echo form_input($data_form);
 ?></p>
+<?php if($this->session->userdata('user_type')=="admin") { ?>
+<p><?=form_label('Status', 'statusz');?> : <?php
+$options = array(
+   '1' => 'Active',
+   '0' => 'Inactive'
+);
+echo form_dropdown('statusz', $options);
+?></p>
+<? } ?>
 <p><?= form_submit('','Post!'); ?></p>
 <?= form_close(); ?> 
 <?php if($errors) { ?>       

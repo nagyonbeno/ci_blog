@@ -36,6 +36,7 @@ Class Posts extends CI_Controller{
 			$config['base_url'] = base_url().'posts/index/';
 			$config['total_rows'] = $this->post->get_posts_count_search($search);
 			$config['per_page'] = 5;
+
 			
 			$this->pagination->initialize($config);
 			
@@ -62,16 +63,17 @@ Class Posts extends CI_Controller{
 		$this->load->view('footer');
 	}
 
-	function post($post_id,$start=0){
+	function post($post_id){
 		$data['errors']=$this->session->flashdata('data');
 		$data['post']=$this->post->get_post($post_id);
-		$data['comment']=$this->comment->get_comment($post_id,5,$start);
+		$data['comment']=$this->comment->get_comment($post_id);
 
 		$this->load->library('pagination');
 		
-		$config['base_url'] = base_url().'posts/post/'.$post_id;
+		$config['base_url'] = base_url().'posts/post/'.$post_id.'/';
 		$config['total_rows'] = $this->comment->get_comments_count($post_id);
-		$config['per_page'] = 2;
+		$config['per_page'] = 3;
+		$config['uri_segment'] = 4;
 		
 		$this->pagination->initialize($config);
 		
@@ -91,7 +93,7 @@ Class Posts extends CI_Controller{
 		}
 			$data['errors'] = "";
 		if($_POST){
-
+			$status = $this->input->post('statusz',true);
 			$config = array(
 
 			array(
@@ -121,7 +123,7 @@ Class Posts extends CI_Controller{
 				'post_szoveg' => htmlspecialchars($_POST['post_szoveg']),
 				'felh_id'	  => $this->session->userdata('user_id'),
 				'hashtag' 	  => htmlspecialchars($_POST['hashtag']),
-				'statusz'	  => 1
+				'statusz'	  => isset($status)?$status:"0"
 				);
 		
 		$this->post->insert_post($data);
@@ -159,8 +161,8 @@ Class Posts extends CI_Controller{
 			redirect(base_url().'users/login');
 		}
 		$data['errors'] = "";
-		$data['success']=0;
 		if($_POST){
+			$status = $this->input->post('statusz',true);
 			$config = array(
 
 			array(
@@ -189,11 +191,11 @@ Class Posts extends CI_Controller{
 				'cim' 		  => htmlspecialchars($_POST['cim']),
 				'post_szoveg' => htmlspecialchars($_POST['post_szoveg']),
 				'hashtag' 	  => htmlspecialchars($_POST['hashtag']),
-				'statusz'	  => 1
+				'statusz'	  => $status
 				);
 
 		$this->post->update_post($post_id,$data_post);
-		$data['success']=1;
+		redirect (base_url().'posts/');
 		} 
 		}
 		$data['post']=$this->post->get_post($post_id);
@@ -214,6 +216,144 @@ Class Posts extends CI_Controller{
 
 	}
 
+
+	function posts_approve($start=0){
+		if(!$this->correct_permissions('author')){
+			redirect(base_url().'users/login');
+		}
+		$data['errors'] = "";
+		if($_POST){
+
+			$config = array(
+
+			array(
+				'field'  => 'search',
+				'label'	 => 'Search',
+				'rules'  => 'required|min_length[3]'
+				)
+			);
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules($config);
+			if($this->form_validation->run() == FALSE){
+				$data['errors'] = validation_errors();
+			} else {
+
+			$search = $this->input->post('search',true);
+			$data['search']=$this->input->post('search',true);
+			$data['posts']=$this->post->approve_search($search,5,$start);
+			$data['count']=$this->post->get_approve_posts_count_search($search);
+
+			$this->load->library('pagination');
+		
+			$config['base_url'] = base_url().'posts/posts_approve/';
+			$config['total_rows'] = $this->post->get_approve_posts_count_search($search);
+			$config['per_page'] = 5;
+
+			
+			$this->pagination->initialize($config);
+			
+			$data['pages']=$this->pagination->create_links();
+			}
+		} else {
+
+			$data['posts']=$this->post->get_posts_approve(5,$start);
+			
+			$this->load->library('pagination');
+			
+			$config['base_url'] = base_url().'posts/posts_approve/';
+			$config['total_rows'] = $this->post->get_approve_posts_count();
+			$config['per_page'] = 5;
+			
+			$this->pagination->initialize($config);
+			
+			$data['pages']=$this->pagination->create_links();
+		}
+
+		$this->load->helper('form');
+		$this->load->view('header');
+		$this->load->view('post_approve_index',$data);
+		$this->load->view('footer');
+	}
+
+
+
+
+	function approve_post($post_id){
+		if(!$this->correct_permissions('author')){
+			redirect(base_url().'users/login');
+		}
+		$data['errors']=$this->session->flashdata('data');
+		$data['post']=$this->post->get_approve_post($post_id);
+
+		$this->load->library('pagination');
+		
+		$config['base_url'] = base_url().'posts/post/'.$post_id.'/';
+		$config['total_rows'] = $this->comment->get_comments_count($post_id);
+		$config['per_page'] = 3;
+		$config['uri_segment'] = 4;
+		
+		$this->pagination->initialize($config);
+		
+		$data['pages']=$this->pagination->create_links();
+
+		$this->load->helper('form');
+		$this->load->view('header');
+		$this->load->view('approve_post',$data);
+		$this->load->view('footer');
+	}
+
+
+
+	function approve_edit_post($post_id){
+		if(!$this->correct_permissions('admin')){
+			redirect(base_url().'users/login');
+		}
+		$data['errors'] = "";
+		if($_POST){
+			$status = $this->input->post('statusz',true);
+			$config = array(
+
+			array(
+				'field'  => 'cim',
+				'label'	 => 'Title',
+				'rules'  => 'required|min_length[3]|max_length[256]'
+				),
+			array(
+				'field'  => 'post_szoveg',
+				'label'	 => 'Post text',
+				'rules'  => 'required|min_length[10]'
+				),
+			array(
+				'field'  => 'hashtag',
+				'label'  => 'Tags',
+				'rules'  => 'min_length[3]'
+				)
+			);
+
+			$this->load->library('form_validation');
+			$this->form_validation->set_rules($config);
+			if($this->form_validation->run() == FALSE){
+				$data['errors'] = validation_errors();
+			} else {
+			$data_post=array(
+				'cim' 		  => htmlspecialchars($_POST['cim']),
+				'post_szoveg' => htmlspecialchars($_POST['post_szoveg']),
+				'hashtag' 	  => htmlspecialchars($_POST['hashtag']),
+				'statusz'	  => $status
+				);
+
+		$this->post->approve_update_post($post_id,$data_post);
+		redirect (base_url().'posts/posts_approve/');
+		} 
+		}
+		$data['post']=$this->post->get_approve_post($post_id);
+		$this->load->helper('form');
+		$this->load->view('header');
+		$this->load->view('approve_edit_post',$data);
+		$this->load->view('footer');
+
+	
+	}
 
 
 

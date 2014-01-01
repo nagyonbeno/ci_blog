@@ -6,6 +6,7 @@
 	<?php if($post['hashtag']) { ?>
 	<h4>Tags: <?=$post['hashtag']?></h4>
 	<? } ?>
-
-	<p class="anchor"><?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?></p>
+	
+	
+	<p class="anchor"><?= anchor('posts/posts_approve/', 'Back to pending posts', 'title="Back to pending posts"'); ?></p>
 </div>

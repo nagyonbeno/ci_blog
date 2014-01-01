@@ -1,5 +1,5 @@
-<h2>Edit Post</h2>
-<?= form_open(base_url().'posts/edit_post/'.$post['post_id']); ?>
+<h2>Edit Approve Post</h2>
+<?= form_open(base_url().'posts/approve_edit_post/'.$post['post_id']); ?>
 <p><?= form_label('Title', 'cim'); ?> : <?php
 $data_form = array(
   'name'  => 'cim',
@@ -30,8 +30,8 @@ echo form_input($data_form);
 ?></p>
 <p><?=form_label('Status', 'statusz');?> : <?php
 $options = array(
-  '1' => 'Active',
-  '0' => 'Inactive'
+  '0' => 'Inactive',
+  '1' => 'Active'
 );
 echo form_dropdown('statusz', $options);
 ?></p>

@@ -4,6 +4,9 @@
       <?= anchor('/users/logout', 'Log out', 'title="Log out"')."<br />"; ?>
       <?php if($this->session->userdata('user_type')=="author" || $this->session->userdata('user_type')=="admin") { ?>
       <?= anchor('/posts/new_post', 'Add Post', 'title="Add post"')."<br />"; ?>
+      	<?php if($this->session->userdata('user_type')=="admin") { ?>
+      		<?= anchor('/posts/posts_approve', 'Approve Posts', 'title="Approve posts"'); ?>
+      	<? } ?>
       <? } ?>
       <? } else { ?>
       <?= anchor('/users/login', 'Login', 'title="Login"')."<br />"; ?>
@@ -27,15 +30,17 @@
 	  	<p><?="There are ".$count." results for : ".$search." ." ?></p>
 	  	<p><?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?></p>
 	  	<? } ?>
-  		<?php if(!isset($posts)){ ?>
+  		<?php if(!isset($posts) || count($posts)==0){ ?>
 	  		<p>No posts to load!</p>
+	  		<?php if(isset($_POST['search'])) { ?>
 	  		<p><?= anchor('', 'Back to the posts', 'title="Back to the posts"'); ?></p>
+	  		<? } ?>
 	  	<?php } else {  
 	  		foreach ($posts as $row){ ?>
 	  			<article>	  	
 					<h3>
 						<a href="<?=base_url()?>posts/post/<?=$row['post_id']?>"><?=$row['cim']?></a><br />
-						<?php if($this->session->userdata('user_type')=="author" || $this->session->userdata('user_type')=="admin") { ?>
+						<?php if($this->session->userdata('user_type')=="admin") { ?>
 						<a href="<?=base_url()?>posts/edit_post/<?=$row['post_id']?>">Edit</a> - 
 						<a href="<?=base_url()?>posts/delete_post/<?=$row['post_id']?>">Delete</a>
 						<? } ?>
