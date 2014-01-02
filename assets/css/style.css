@@ -30,9 +30,25 @@ h4{
   margin: 10px 0;
 }
 
+h4#hashtag{
+	float: left;
+	margin-right: 5px;
+}
+
 a{
 color:#366774; 
 text-decoration:none;
+}
+
+p.clear{
+	clear: both;
+}
+
+
+p.hashtag_search{
+	float: left;
+	font-weight: bold;
+	margin-top: 10px;
 }
 
 

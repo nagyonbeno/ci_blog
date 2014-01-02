@@ -89,6 +89,22 @@ Class Post extends CI_model{
 		$this->db->where('post_id',$post_id);
 		$this->db->update('posts',$data);
 	}
+
+	function hashtag_search($hashtag,$num=20,$start=0){
+		$where = "hashtag like '%$hashtag%' and statusz=1";
+		$this->db->select()->from('posts')->where($where)->order_by('datum','desc')->limit($num,$start);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+
+	function hashtag_search_count($hashtag){
+		$where = "hashtag like '%$hashtag%' and statusz=1";
+		$this->db->select()->from('posts')->where($where)->order_by('datum','desc');
+		$query = $this->db->get();
+		return $query->num_rows();
+
+	}
 }
 
 ?>

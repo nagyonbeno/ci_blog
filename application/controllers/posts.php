@@ -26,7 +26,8 @@ Class Posts extends CI_Controller{
 				$data['errors'] = validation_errors();
 			} else {
 
-			$search = $this->input->post('search',true);
+			$valami = $this->input->post('search',true);
+			$search = $this->db->escape_like_str($valami);
 			$data['search']=$this->input->post('search',true);
 			$data['posts']=$this->post->search($search,5,$start);
 			$data['count']=$this->post->get_posts_count_search($search);
@@ -106,15 +107,25 @@ Class Posts extends CI_Controller{
 				'label'	 => 'Post text',
 				'rules'  => 'required|min_length[10]'
 				),
-			array(
-				'field'  => 'hashtag',
-				'label'  => 'Tags',
-				'rules'  => 'min_length[3]'
-				)
+			
 			);
+			
 
 			$this->load->library('form_validation');
 			$this->form_validation->set_rules($config);
+			$this->form_validation->set_rules('hashtag','Tags','min_length[3]|callback_hashtag_check');
+			
+			function hashtag_check(){
+			$hashtag = $this->input->post('hashtag',true);
+			$regex = '[a-z0-9A-Z,]';
+			if(!preg_match($regex,$hashtag))
+			{
+				$this->form_validation->set_message('hashtag’, ‘Please enter a valid hashtag.');
+				return FALSE;
+			} else {
+				return TRUE;
+			}
+			}
 			if($this->form_validation->run() == FALSE){
 				$data['errors'] = validation_errors();
 			} else {
@@ -238,7 +249,8 @@ Class Posts extends CI_Controller{
 				$data['errors'] = validation_errors();
 			} else {
 
-			$search = $this->input->post('search',true);
+			$valami = $this->input->post('search',true);
+			$search = $this->db->escape_like_str($valami);
 			$data['search']=$this->input->post('search',true);
 			$data['posts']=$this->post->approve_search($search,5,$start);
 			$data['count']=$this->post->get_approve_posts_count_search($search);
@@ -353,6 +365,31 @@ Class Posts extends CI_Controller{
 		$this->load->view('footer');
 
 	
+	}
+
+	function hashtag_posts($hashtag,$start=0){
+			
+			$data['posts']=$this->post->hashtag_search($hashtag,5,$start);
+			$data['count']=$this->post->hashtag_search_count($hashtag);
+			$data['hashtag']=$hashtag;
+
+			$this->load->library('pagination');
+		
+			$config['base_url'] = base_url().'posts/hashtag_posts/'.$hashtag;
+			$config['total_rows'] = $this->post->hashtag_search_count($hashtag);
+			$config['per_page'] = 5;
+			$config['uri_segment'] = 4;
+
+			
+			$this->pagination->initialize($config);
+			
+			$data['pages']=$this->pagination->create_links();
+	
+
+		$this->load->helper('form');
+		$this->load->view('header');
+		$this->load->view('hashtag_search_index',$data);
+		$this->load->view('footer');
 	}
 
 
