@@ -68,6 +68,7 @@ Class Posts extends CI_Controller{
 		$data['errors']=$this->session->flashdata('data');
 		$data['post']=$this->post->get_post($post_id);
 		$data['comment']=$this->comment->get_comment($post_id);
+		$data['comment_num']=$this->comment->get_comments_count($post_id);
 
 		$this->load->library('pagination');
 		
@@ -117,7 +118,7 @@ Class Posts extends CI_Controller{
 			
 			function hashtag_check(){
 			$hashtag = $this->input->post('hashtag',true);
-			$regex = '[a-z0-9A-Z,]';
+			$regex = '/[a-z0-9A-Z,]+/';
 			if(!preg_match($regex,$hashtag))
 			{
 				$this->form_validation->set_message('hashtag’, ‘Please enter a valid hashtag.');
@@ -131,9 +132,9 @@ Class Posts extends CI_Controller{
 			} else {
 			$data=array(
 				'cim' 		  => htmlspecialchars($_POST['cim']),
-				'post_szoveg' => htmlspecialchars($_POST['post_szoveg']),
+				'post_szoveg' => $_POST['post_szoveg'],
 				'felh_id'	  => $this->session->userdata('user_id'),
-				'hashtag' 	  => htmlspecialchars($_POST['hashtag']),
+				'hashtag' 	  => $_POST['hashtag'],
 				'statusz'	  => isset($status)?$status:"0"
 				);
 		
@@ -200,7 +201,7 @@ Class Posts extends CI_Controller{
 			} else {
 			$data_post=array(
 				'cim' 		  => htmlspecialchars($_POST['cim']),
-				'post_szoveg' => htmlspecialchars($_POST['post_szoveg']),
+				'post_szoveg' => $_POST['post_szoveg'],
 				'hashtag' 	  => htmlspecialchars($_POST['hashtag']),
 				'statusz'	  => $status
 				);

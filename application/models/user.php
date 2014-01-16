@@ -19,6 +19,11 @@ Class User Extends CI_Model{
 		return $query->first_row('array');
 	}
 
+	function get_user($user_id){
+		$this->db->select()->from('users')->where('user_id',$user_id);
+		$query = $this->db->get();
+		return $query->first_row('array');
+	}
 
 
 

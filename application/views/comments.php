@@ -1,4 +1,5 @@
 <?php if($comment) { ?>
+<p>There is/are <?=$comment_num?> comment in this post.</p>
 <h4>Comments :</h4>
 <? foreach ($comment as $row) { ?>
 <div class="comments">

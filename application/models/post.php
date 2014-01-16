@@ -3,7 +3,7 @@
 Class Post extends CI_model{
 
 	function get_posts($num=20,$start=0){
-		$this->db->select()->from ('posts')->where('statusz',1)->order_by('datum','desc')->limit($num,$start);
+		$this->db->select()->from ('posts')->join('users','posts.felh_id = users.user_id')->where('statusz',1)->order_by('datum','desc')->limit($num,$start);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -37,7 +37,7 @@ Class Post extends CI_model{
 
 	function search($search,$num=20,$start=0){
 		$where = "cim like '%$search%' or post_szoveg like '%$search%' or hashtag like '%$search%' and statusz=1";
-		$this->db->select()->from('posts')->where($where)->order_by('datum','desc')->limit($num,$start);
+		$this->db->select()->from('posts')->join('users','posts.felh_id = users.user_id')->where($where)->order_by('datum','desc')->limit($num,$start);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -51,7 +51,7 @@ Class Post extends CI_model{
 	}
 
 	function get_posts_approve($num=20,$start=0){
-		$this->db->select()->from ('posts')->where('statusz','0')->order_by('datum','desc')->limit($num,$start);
+		$this->db->select()->from ('posts')->join('users','posts.felh_id = users.user_id')->where('statusz','0')->order_by('datum','desc')->limit($num,$start);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -65,7 +65,7 @@ Class Post extends CI_model{
 
 	function approve_search($search,$num=20,$start=0){
 		$where = "cim like '%$search%' or post_szoveg like '%$search%' or hashtag like '%$search%' and statusz=0";
-		$this->db->select()->from('posts')->where($where)->order_by('datum','desc')->limit($num,$start);
+		$this->db->select()->from('posts')->join('users','posts.felh_id = users.user_id')->where($where)->order_by('datum','desc')->limit($num,$start);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -92,7 +92,7 @@ Class Post extends CI_model{
 
 	function hashtag_search($hashtag,$num=20,$start=0){
 		$where = "hashtag like '%$hashtag%' and statusz=1";
-		$this->db->select()->from('posts')->where($where)->order_by('datum','desc')->limit($num,$start);
+		$this->db->select()->from('posts')->join('users','posts.felh_id = users.user_id')->where($where)->order_by('datum','desc')->limit($num,$start);
 		$query = $this->db->get();
 		return $query->result_array();
 	}
@@ -103,7 +103,18 @@ Class Post extends CI_model{
 		$this->db->select()->from('posts')->where($where)->order_by('datum','desc');
 		$query = $this->db->get();
 		return $query->num_rows();
+	}
 
+	function get_user_posts($user_id,$num=20,$start=0){
+		$this->db->select()->from('posts')->join('users','posts.felh_id = users.user_id')->where('posts.felh_id',$user_id)->order_by('datum','desc')->limit($num,$start);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
+	function get_user_posts_count($user_id){
+		$this->db->select()->from('posts')->join('users','posts.felh_id = users.user_id')->where('posts.felh_id',$user_id);
+		$query = $this->db->get();
+		return $query->num_rows();
 	}
 }
 

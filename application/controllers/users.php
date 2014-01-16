@@ -2,6 +2,12 @@
 
 Class Users Extends CI_Controller{
 	
+	function __construct(){
+		parent::__construct();
+		$this->load->model('user');
+		$this->load->model('post');
+	}
+
 
 	function login(){
 		$data['error']=0;
@@ -47,6 +53,11 @@ Class Users Extends CI_Controller{
 				'rules'  => 'trim|required|min_lenght[3]|is_unique[users.nev]'
 				),
 			array(
+				'field'  => 'email',
+				'label'	 => 'Email',
+				'rules'  => 'valid_email|is_unique[users.email]'
+				),
+			array(
 				'field'  => 'jelszo',
 				'label'	 => 'Password',
 				'rules'  => 'trim|required|min_lenght[5]'
@@ -68,10 +79,16 @@ Class Users Extends CI_Controller{
 			if($this->form_validation->run() == FALSE){
 				$data['errors'] = validation_errors();
 			} else {
+
+			
+
 			$data = array(
-				'nev' => $_POST['nev'],
-				'jelszo' => sha1($_POST['jelszo']),
-				'user_type' => $_POST['user_type']
+				'nev' 		=> $_POST['nev'],
+				'jelszo' 	=> sha1($_POST['jelszo']),
+				'email' 	=> $_POST['email'],
+				'user_type' => $_POST['user_type'],
+				'reg_ideje'	=> date("y-m-d"),
+				'kep'		=> $kep
 				);
 			$this->load->model('user');
 			$user_id = $this->user->create_user($data);
@@ -87,6 +104,35 @@ Class Users Extends CI_Controller{
 
 		
 	}
+
+	function user($user_id){
+
+		$this->load->library('pagination');
+
+		$config['base_url'] = base_url().'users/user/'.$user_id.'/';
+		$config['total_rows'] = $this->post->get_user_posts_count($user_id);
+		$config['per_page'] = 5;
+		$config['uri_segment'] = 4;
+		$config['use_page_numbers'] = TRUE;
+
+		$this->pagination->initialize($config);
+
+		$data['user_details']=$this->user->get_user($user_id);
+		$data['user_posts'] = $this->post->get_user_posts($user_id);
+		$data['posts_number'] = $this->post->get_user_posts_count($user_id);
+		$data['pages'] = $this->pagination->create_links();
+
+		$this->load->view('header');
+		$this->load->view('user_page',$data);
+		$this->load->view('footer');
+	}
+
+
+
+
+
+
+
 
 }
 

@@ -1,3 +1,4 @@
+<section id="container">
 <h2>Add Post</h2>
 <?= form_open(base_url().'posts/new_post'); ?>
 <p><?= form_label('Title', 'cim'); ?> : <?php

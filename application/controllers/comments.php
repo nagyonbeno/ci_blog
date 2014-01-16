@@ -28,7 +28,7 @@ Class Comments extends CI_Controller{
 					redirect(base_url().'posts/post/'.$_POST['post_id']);
 				} else {
 				$data=array(
-					'comment_szoveg'  => htmlspecialchars($_POST['comment']),
+					'comment_szoveg'  => $_POST['comment'],
 					'comment_felh_id' => $this->session->userdata('user_id'),
 					'post_id' => $_POST['post_id'],
 	 				'comment_statusz' => 1
